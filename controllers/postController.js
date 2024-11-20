@@ -3,9 +3,8 @@ const posts = require ('../data/posts')
 
 //index 
 function index (req, res) {
-  const title = posts.map((post) => post.title);
+  const title = posts.map((post) => post.title)
   console.log(`Elenco dolci: ${title}`)
-  //  res.json({ posts })
   let filteredPosts = posts
   const tag = req.query.tag
 
@@ -17,6 +16,8 @@ function index (req, res) {
   }
 
   res.json({ filteredPosts })
+  const tagPost = filteredPosts.map((tag) => tag.title)
+  console.log (`Dolci con tag ${tag}: ${tagPost}`)
 }
 
 
@@ -79,7 +80,6 @@ function modify (req, res) {
 function destroy (req, res) {
   let identifier = req.params.identifier
   console.log(`Elimino dolce: ${identifier}`)
-  // res.send(`Elimino il dolce: ${identifier}`)
   let post = posts
 
   if (!isNaN(identifier)) {
@@ -94,8 +94,8 @@ function destroy (req, res) {
 		res.status(404)
 
 		return res.json({
-			error: 'Pizza not found',
-			message: 'La pizza non è stata trovata.',
+			error: 'Post not found',
+			message: 'Post non trovato.',
 		})
 	}
 
