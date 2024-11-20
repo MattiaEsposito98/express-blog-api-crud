@@ -2,7 +2,7 @@ console.log("Blog")
 const express = require('express')
 const app = express()
 const port = 3000
-const posts = require('./posts')
+const posts = require('./data/posts')
 const imagesRouter = require ('./routers/images')
 
 
