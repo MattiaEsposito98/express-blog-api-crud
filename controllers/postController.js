@@ -29,29 +29,22 @@ function index(req, res) {
 function show(req, res) {
   let identifier = req.params.identifier
   console.log(`Parametro dinamico: ${identifier}`)
-  let post
+  //Funzione per convertire identifier
+  const post = converter(identifier,posts)
 
-  if (!isNaN(identifier)) {
-    identifier = parseInt(identifier) // Converto in numero
-    post = posts.find((post) => post.id === identifier)  // Cerco per ID
-  } else {
-    post = posts.find((post) => post.slug === identifier) // Cerco per slug
-  }
-
-  // Risposta se il post è stato trovato
   if (post) {
-    return res.json(
-      post
-    )
+    return res.json(post)
   }
-
-  // Dolce non trovato
+else {
   console.log('Dolce non trovato');
   return res.status(404).json({
     error: 'Dolce non trovato',
     message: 'Il dolce richiesto non è presente nel database.'
   });
 }
+}
+  // Dolce non trovato
+  
 
 
 //Store
@@ -91,14 +84,8 @@ function store(req, res) {
 function update(req, res) {
   let identifier = req.params.identifier
   console.log(`Parametro dinamico per modifica: ${identifier}`)
-  let post
-
-  if (!isNaN(identifier)) {
-    identifier = parseInt(identifier) // Converto in numero
-    post = posts.find((post) => post.id === identifier)  // Cerco per ID
-  } else {
-    post = posts.find((post) => post.slug === identifier) // Cerco per slug
-  }
+  //Funzione per convertire identifier
+  const post = converter(identifier,posts)
 
   // Risposta se il post non è stato trovato
   if (!post) {
@@ -151,14 +138,8 @@ function modify(req, res) {
 function destroy(req, res) {
   let identifier = req.params.identifier
   console.log(`Elimino dolce: ${identifier}`)
-  let postIndex
-
-  if (!isNaN(identifier)) {
-    identifier = parseInt(identifier) // Converto in numero
-    postIndex = posts.findIndex((post) => post.id === identifier); // Cerco per ID
-  } else {
-    postIndex = posts.findIndex((post) => post.slug === identifier); // Cerco per slug
-  }
+//Funzione per convertire identifier
+const postIndex = converterForDestroy(identifier,posts)
 
   // Risposta 
   if (postIndex === -1) {
@@ -208,6 +189,26 @@ function validate(req) {
   	errors.push('Tags is required')
   }
 
-
   return errors
 }
+
+
+//Funzione per covertire identifier
+function converter(identifier, arrayMain) {
+  if (!isNaN(identifier)) {
+    identifier = parseInt(identifier)
+    return arrayMain.find((el) => el.id === identifier)  //Cerco per ID
+  } else {
+    return arrayMain.find((el) => el.slug === identifier) //Cerco per slug
+  }
+}
+
+
+// function converterForDestroy(identifier, arrayMain) {
+//   if (!isNaN(identifier)) {
+//     identifier = parseInt(identifier)
+//     return arrayMain.findex((el) => el.id === identifier)  //Cerco per ID
+//   } else {
+//     return arrayMain.findex((el) => el.slug === identifier) //Cerco per slug
+//   }
+// }
