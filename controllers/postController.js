@@ -204,11 +204,11 @@ function converter(identifier, arrayMain) {
 }
 
 
-// function converterForDestroy(identifier, arrayMain) {
-//   if (!isNaN(identifier)) {
-//     identifier = parseInt(identifier)
-//     return arrayMain.findex((el) => el.id === identifier)  //Cerco per ID
-//   } else {
-//     return arrayMain.findex((el) => el.slug === identifier) //Cerco per slug
-//   }
-// }
+function converterForDestroy(identifier, arrayMain) {
+  if (!isNaN(identifier)) {
+    identifier = parseInt(identifier)
+    return arrayMain.findIndex((el) => el.id === identifier)  //Cerco per ID
+  } else {
+    return arrayMain.findIndex((el) => el.slug === identifier) //Cerco per slug
+  }
+}
