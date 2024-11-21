@@ -3,10 +3,11 @@ const express = require('express')
 const app = express()
 const port = 3000
 const posts = require('./data/posts')
-const imagesRouter = require ('./routers/images')
+const postsRouter = require ('./routers/PostsR')
 
 
 app.use(express.static('pubblic'))
+app.use (express.json())
 
 
 app.get('/', (req, res) => {
@@ -14,7 +15,7 @@ app.get('/', (req, res) => {
 })
 
 //importo Router tramite funzione use
-app.use ("/images", imagesRouter)
+app.use ("/images", postsRouter)
 
 app.get('/bacheca', (req, res) => {
   res.json({

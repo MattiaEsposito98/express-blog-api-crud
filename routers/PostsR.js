@@ -19,12 +19,12 @@ router.post('/', postController.store)
 
 
 // Update
-router.put('/:slug', postController.update)
+router.put('/:identifier', postController.update)
 
 
 
 // modify
-router.patch('/:slug', postController.modify)
+router.patch('/:identifier', postController.modify)
 
 
 // destroy

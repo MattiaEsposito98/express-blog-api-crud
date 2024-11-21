@@ -1,12 +1,14 @@
-const posts = require ('../data/posts')
+const posts = require('../data/posts')
+let lastIndex = posts.at(-1).id
 
 
 //index 
-function index (req, res) {
+function index(req, res) {
   const title = posts.map((post) => post.title)
   console.log(`Elenco dolci: ${title}`)
+
   let filteredPosts = posts
-  const tag = req.query.tag
+  const tag = req.query.tags
 
   if (tag) {
     filteredPosts = posts.filter((post) => {
@@ -15,30 +17,32 @@ function index (req, res) {
 
   }
 
-  res.json({ filteredPosts })
+  res.json({
+    results: filteredPosts
+  })
   const tagPost = filteredPosts.map((tag) => tag.title)
-  console.log (`Dolci con tag ${tag}: ${tagPost}`)
+  console.log(`Dolci con tag ${tag}: ${tagPost}`)
 }
 
 
 //show
-function show (req, res) {
+function show(req, res) {
   let identifier = req.params.identifier
   console.log(`Parametro dinamico: ${identifier}`)
-  let post = posts
+  let post
 
   if (!isNaN(identifier)) {
-    identifier = parseInt(identifier); // Converto in numero
-    post = posts.find((post) => post.id === identifier); // Cerco per ID
+    identifier = parseInt(identifier) // Converto in numero
+    post = posts.find((post) => post.id === identifier)  // Cerco per ID
   } else {
-    post = posts.find((post) => post.slug === identifier); // Cerco per slug
+    post = posts.find((post) => post.slug === identifier) // Cerco per slug
   }
 
   // Risposta se il post è stato trovato
   if (post) {
-    return res.json({
-      Dolce: post
-    });
+    return res.json(
+      post
+    )
   }
 
   // Dolce non trovato
@@ -51,24 +55,91 @@ function show (req, res) {
 
 
 //Store
-function store (req, res) {
-  console.log(`Creo dolce:`)
-  res.send('Creo un nuovo dolce')
+function store(req, res) {
+  console.log(req.body)
+  const { title, slug, content, image, tags } = req.body
+  const errors = validate(req)
+
+
+  if (errors.length) {
+    res.status(400)
+
+    return res.json({
+      error: 'Invalid request',
+      messages: errors,
+    })
+  }
+  lastIndex++
+
+  const post = {
+    id: lastIndex,
+    title,
+    slug,
+    content,
+    image,
+    tags
+  }
+
+  posts.push(post)
+
+  res.status(201).send(post)
 }
 
 
 
 // Update
 function update(req, res) {
-  const slug = req.params.slug
-  console.log(`Aggiorno dolce: ${slug}`)
-  res.send(`Aggiorno il dolce: ${slug}`)
+  let identifier = req.params.identifier
+  console.log(`Parametro dinamico per modifica: ${identifier}`)
+  let post
+
+  if (!isNaN(identifier)) {
+    identifier = parseInt(identifier) // Converto in numero
+    post = posts.find((post) => post.id === identifier)  // Cerco per ID
+  } else {
+    post = posts.find((post) => post.slug === identifier) // Cerco per slug
+  }
+
+  // Risposta se il post non è stato trovato
+  if (!post) {
+    res.status(404)
+
+    // Dolce non trovato
+    console.log('Dolce non trovato');
+    return res.status(404).json({
+      error: 'Dolce non trovato',
+      message: 'Il dolce richiesto non è presente nel database.'
+    })
+  }
+
+  const errors = validate(req)
+
+  if (errors.length) {
+    res.status(400)
+
+    return res.json({
+      error: 'Invalid request',
+      messages: errors,
+    })
+  }
+  console.log(`Aggiorno dolce: ${identifier}`)
+
+
+  const { title, slug, content, image, tags } = req.body
+  post.title = title
+  post.slug = slug
+  post.content = content
+  post.image = image
+  post.tags = tags
+
+
+  res.json(post)
 }
 
 
 
 // modify
-function modify (req, res) {
+function modify(req, res) {
   const slug = req.params.slug
   console.log(`Modifico dolce: ${slug}`)
   res.send(`Modifico il dolce: ${slug}`)
@@ -77,13 +148,13 @@ function modify (req, res) {
 
 
 // destroy
-function destroy (req, res) {
+function destroy(req, res) {
   let identifier = req.params.identifier
   console.log(`Elimino dolce: ${identifier}`)
-  let post = posts
+  let postIndex
 
   if (!isNaN(identifier)) {
-    identifier = parseInt(identifier); // Converto in numero
+    identifier = parseInt(identifier) // Converto in numero
     postIndex = posts.findIndex((post) => post.id === identifier); // Cerco per ID
   } else {
     postIndex = posts.findIndex((post) => post.slug === identifier); // Cerco per slug
@@ -91,20 +162,52 @@ function destroy (req, res) {
 
   // Risposta 
   if (postIndex === -1) {
-		res.status(404)
+    res.status(404)
 
-		return res.json({
-			error: 'Post not found',
-			message: 'Post non trovato.',
-		})
-	}
+    return res.json({
+      error: 'Post not found',
+      message: 'Post non trovato.',
+    })
+  }
 
   posts.splice(postIndex, 1)
 
-	res.sendStatus(204)
-  console.log (`${identifier} eliminato`)
-  const remainingSweet = posts.map((post) => post.title);
+  res.sendStatus(204)
+  console.log(`${identifier} eliminato`)
+  const remainingSweet = posts.map((post) => post.title)
   console.log(`Elenco dolci rimasti: ${remainingSweet}`)
 }
 
 module.exports = { index, show, store, update, modify, destroy }
+
+
+
+function validate(req) {
+  const { title, slug, content, image, tags } = req.body
+
+  // VALIDAZIONE DEI DATI
+  const errors = []
+
+  if (!title) {
+    errors.push('Title is required')
+  }
+
+   if (!slug) {
+  	errors.push('Slug is required')
+  }
+
+  if (!content) {
+  	errors.push('Content is required')
+  }
+
+  if (!image) {
+  	errors.push('Image is required')
+  }
+
+  if (!tags) {
+  	errors.push('Tags is required')
+  }
+
+
+  return errors
+}
