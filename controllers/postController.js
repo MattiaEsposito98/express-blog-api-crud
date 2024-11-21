@@ -43,8 +43,6 @@ else {
   });
 }
 }
-  // Dolce non trovato
-  
 
 
 //Store
@@ -80,7 +78,7 @@ function store(req, res) {
 
 
 
-// Update
+// Update per tutti i campi
 function update(req, res) {
   let identifier = req.params.identifier
   console.log(`Parametro dinamico per modifica: ${identifier}`)
@@ -125,11 +123,34 @@ function update(req, res) {
 
 
 
-// modify
+// modify per campi parziali
 function modify(req, res) {
-  const slug = req.params.slug
-  console.log(`Modifico dolce: ${slug}`)
-  res.send(`Modifico il dolce: ${slug}`)
+  let identifier = req.params.identifier
+  console.log(`Parametro dinamico per modifica: ${identifier}`)
+  //Funzione per convertire identifier
+  const post = converter(identifier,posts)
+
+  console.log(`Modifico dolce: ${identifier}`)
+
+  if (!post) {
+    res.status(404)
+
+    // Dolce non trovato
+    console.log('Dolce non trovato');
+    return res.status(404).json({
+      error: 'Dolce non trovato',
+      message: 'Il dolce richiesto non è presente nel database.'
+    })
+  }
+
+  const { title, slug, content, image, tags } = req.body
+  if(title) post.title = title
+  if(slug) post.slug = slug
+  if(content) post.content = content
+  if(image) post.image = image
+  if(tags) post.tags = tags
+
+  res.json(post)
 }
 
 
