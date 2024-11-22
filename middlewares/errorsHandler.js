@@ -1,8 +1,10 @@
 function errorsHandler(err, req, res, next) {
-	// console.log(err)
+	 console.log("funzione errorsHandler")
 	res.status(500)
 	res.json({
-		message: err.message,
+		error: true,
+		message: "Post non trovato"
+
 	})
 }
 

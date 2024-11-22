@@ -8,7 +8,7 @@ function index(req, res) {
   const title = posts.map((post) => post.title)
   console.log(`Elenco dolci: ${title}`)
 
-  let filteredPosts
+  let filteredPosts = posts
   const tag = req.query.tags
 
   if (tag) {
@@ -33,16 +33,25 @@ function show(req, res) {
   //Funzione per convertire identifier
   const post = converter(identifier,posts)
 
-  if (post) {
-    return res.json(post)
-  }
-else {
-  console.log('Dolce non trovato');
-  return res.status(404).json({
-    error: 'Dolce non trovato',
-    message: 'Il dolce richiesto non è presente nel database.'
-  });
+//   if (post) {
+//     return 
+//   res.json(res.post)
+//   }
+// else {
+//   console.log('Dolce non trovato');
+//   return res.status(404).json({
+//     error: 'Dolce non trovato',
+//     message: 'Il dolce richiesto non è presente nel database.'
+//   });
+// }
+
+if (!post) {
+  return errorsHandler(err, req, res, next)
 }
+else {
+  return res.json(post)
+}
+
 }
 
 
