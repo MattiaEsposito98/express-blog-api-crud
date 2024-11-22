@@ -15,9 +15,9 @@ app.get('/', (req, res) => {
 })
 
 //importo Router tramite funzione use
-app.use ("/images", postsRouter)
+app.use ("/posts", postsRouter)
 
-app.get('/bacheca', (req, res) => {
+app.get('/posts', (req, res) => {
   res.json({
     count: posts.length,
     posts: posts

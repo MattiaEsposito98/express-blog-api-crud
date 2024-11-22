@@ -8,7 +8,7 @@ function index(req, res) {
   const title = posts.map((post) => post.title)
   console.log(`Elenco dolci: ${title}`)
 
-  let filteredPosts = posts
+  let filteredPosts
   const tag = req.query.tags
 
   if (tag) {
