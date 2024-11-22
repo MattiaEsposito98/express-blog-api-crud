@@ -33,24 +33,10 @@ function show(req, res) {
   //Funzione per convertire identifier
   const post = converter(identifier,posts)
 
-//   if (post) {
-//     return 
-//   res.json(res.post)
-//   }
-// else {
-//   console.log('Dolce non trovato');
-//   return res.status(404).json({
-//     error: 'Dolce non trovato',
-//     message: 'Il dolce richiesto non è presente nel database.'
-//   });
-// }
-
 if (!post) {
-  return errorsHandler(err, req, res, next)
+ return errorsHandler(err, req, res, next)
 }
-else {
-  return res.json(post)
-}
+ res.json(post)
 
 }
 
@@ -92,20 +78,9 @@ function store(req, res) {
 function update(req, res) {
   let identifier = req.params.identifier
   console.log(`Parametro dinamico per modifica: ${identifier}`)
+
   //Funzione per convertire identifier
   const post = converter(identifier,posts)
-
-  // Risposta se il post non è stato trovato
-  if (!post) {
-    res.status(404)
-
-    // Dolce non trovato
-    console.log('Dolce non trovato');
-    return res.status(404).json({
-      error: 'Dolce non trovato',
-      message: 'Il dolce richiesto non è presente nel database.'
-    })
-  }
 
   const errors = validate(req)
 
@@ -128,7 +103,10 @@ function update(req, res) {
   post.tags = tags
 
 
-  res.json(post)
+  if (!post) {
+    return errorsHandler(err, req, res,next)
+   }
+    res.json(post)
 }
 
 
@@ -142,17 +120,6 @@ function modify(req, res) {
 
   console.log(`Modifico dolce: ${identifier}`)
 
-  if (!post) {
-    res.status(404)
-
-    // Dolce non trovato
-    console.log('Dolce non trovato');
-    return res.status(404).json({
-      error: 'Dolce non trovato',
-      message: 'Il dolce richiesto non è presente nel database.'
-    })
-  }
-
   const { title, slug, content, image, tags } = req.body
   if(title) post.title = title
   if(slug) post.slug = slug
@@ -160,7 +127,10 @@ function modify(req, res) {
   if(image) post.image = image
   if(tags) post.tags = tags
 
-  res.json(post)
+  if (!post) {
+    return errorsHandler(err, req, res, next)
+   }
+    res.json(post)
 }
 
 
@@ -172,15 +142,9 @@ function destroy(req, res) {
 //Funzione per convertire identifier
 const postIndex = converterForDestroy(identifier,posts)
 
-  // Risposta 
   if (postIndex === -1) {
-    res.status(404)
-
-    return res.json({
-      error: 'Post not found',
-      message: 'Post non trovato.',
-    })
-  }
+    return errorsHandler(err, req, res, next)
+   }
 
   posts.splice(postIndex, 1)
 
