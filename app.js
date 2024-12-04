@@ -1,14 +1,17 @@
 console.log("Blog")
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const port = 3000
 const posts = require('./data/posts')
-const postsRouter = require ('./routers/PostsR')
-const errorsHandler = require ('./middlewares/errorsHandler')
-const notFound = require ('./middlewares/notFound')
+const postsRouter = require('./routers/PostsR')
+const errorsHandler = require('./middlewares/errorsHandler')
+const notFound = require('./middlewares/notFound')
 
+
+app.use(cors())
 app.use(express.static('pubblic'))
-app.use (express.json())
+app.use(express.json())
 
 
 app.get('/', (req, res) => {
@@ -16,7 +19,7 @@ app.get('/', (req, res) => {
 })
 
 //importo Router tramite funzione use
-app.use ("/posts", postsRouter)
+app.use("/posts", postsRouter)
 
 app.get('/posts', (req, res) => {
   res.json({

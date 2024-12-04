@@ -1,5 +1,5 @@
 const posts = require('../data/posts')
-const {validate, converter, converterForDestroy} = require('../data/utilities')
+const { validate, converter, converterForDestroy } = require('../data/utilities')
 let lastIndex = posts.at(-1).id
 
 
@@ -31,12 +31,12 @@ function show(req, res) {
   let identifier = req.params.identifier
   console.log(`Parametro dinamico: ${identifier}`)
   //Funzione per convertire identifier
-  const post = converter(identifier,posts)
+  const post = converter(identifier, posts)
 
-if (!post) {
- return errorsHandler(err, req, res, next)
-}
- res.json(post)
+  if (!post) {
+    return errorsHandler(err, req, res, next)
+  }
+  res.json(post)
 
 }
 
@@ -69,7 +69,7 @@ function store(req, res) {
 
   posts.push(post)
 
-  res.status(201).send(post)
+  res.status(201).json(post)
 }
 
 
@@ -80,7 +80,7 @@ function update(req, res) {
   console.log(`Parametro dinamico per modifica: ${identifier}`)
 
   //Funzione per convertire identifier
-  const post = converter(identifier,posts)
+  const post = converter(identifier, posts)
 
   const errors = validate(req)
 
@@ -104,9 +104,9 @@ function update(req, res) {
 
 
   if (!post) {
-    return errorsHandler(err, req, res,next)
-   }
-    res.json(post)
+    return errorsHandler(err, req, res, next)
+  }
+  res.json(post)
 }
 
 
@@ -116,21 +116,21 @@ function modify(req, res) {
   let identifier = req.params.identifier
   console.log(`Parametro dinamico per modifica: ${identifier}`)
   //Funzione per convertire identifier
-  const post = converter(identifier,posts)
+  const post = converter(identifier, posts)
 
   console.log(`Modifico dolce: ${identifier}`)
 
   const { title, slug, content, image, tags } = req.body
-  if(title) post.title = title
-  if(slug) post.slug = slug
-  if(content) post.content = content
-  if(image) post.image = image
-  if(tags) post.tags = tags
+  if (title) post.title = title
+  if (slug) post.slug = slug
+  if (content) post.content = content
+  if (image) post.image = image
+  if (tags) post.tags = tags
 
   if (!post) {
     return errorsHandler(err, req, res, next)
-   }
-    res.json(post)
+  }
+  res.json(post)
 }
 
 
@@ -139,12 +139,12 @@ function modify(req, res) {
 function destroy(req, res) {
   let identifier = req.params.identifier
   console.log(`Elimino dolce: ${identifier}`)
-//Funzione per convertire identifier
-const postIndex = converterForDestroy(identifier,posts)
+  //Funzione per convertire identif
+  const postIndex = converterForDestroy(identifier, posts)
 
   if (postIndex === -1) {
     return errorsHandler(err, req, res, next)
-   }
+  }
 
   posts.splice(postIndex, 1)
 
